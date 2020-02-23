@@ -11985,4 +11985,20 @@ describe('QueryBuilder', () => {
       });
     });
   });
+
+  it('allows adhoc transformation of generated query through transformRaw', () => {
+    testsql(
+      qb()
+        .select('*')
+        .from('users')
+        .transformRaw((query) => {
+          query.sql = query.sql.replace('*', 'id');
+        }),
+      {
+        mysql: 'select id from `users`',
+        mssql: 'select id from [users]',
+        pg: 'select id from "users"',
+      }
+    );
+  });
 });
